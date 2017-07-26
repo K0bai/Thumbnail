@@ -1,3 +1,27 @@
+#include "thumbnailBmp.h"
+#include "thumbnailJpeg.h"
+#include "thumbnailPng.h"
+
+int main()
+{
+	thumbnailBmp tBmp;
+	thumbnailJpeg tJpeg;
+	thumbnailPng tPng;
+	tBmp.GetImageData("video/Titanic.mkv", "output/testBmp.bmp", 1000, 1200);
+	tJpeg.GetImageData("video/Titanic.mkv", "output/testJpeg.jpg", 1000, 1200);
+	tPng.GetImageData("video/Titanic.mkv", "output/testPng.png", 1000, 1200);
+
+	return 0;
+}
+
+
+
+
+
+
+
+// 完整的一个CPP，可以运行
+/*
 #include <string>
 #include <cassert>
 #include <sstream>
@@ -5,14 +29,14 @@
 extern "C"
 {
 #ifndef INT64_C
-#define INT64_C(c) (c ## LL)
+#define INT64_C(c) (c ## LL)b
 #define UINT64_C(c) (c ## ULL)
 #endif
 #include <stdlib.h>
-#include <libavutil/avutil.h>
+//#include <libavutil/avutil.h>
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
-#include <libavcodec/avcodec.h>
+//#include <libavcodec/avcodec.h>
 #include <png.h> 
 #include "jpeglib.h"
 #include "jconfig.h"
@@ -50,6 +74,7 @@ bool CreatePng(std::string filename, uint8_t *pRGBBuffer, int width, int height)
 
 int main(int argc, char* argv[])
 {
+
 	int iResult = 0;
 	// 注册
 	av_register_all();
@@ -84,7 +109,6 @@ int main(int argc, char* argv[])
 	AVFrame* pFrame = avcodec_alloc_frame();
 	AVPacket pkt;
 	av_init_packet(&pkt);
-
 	while (av_read_frame(pavFmtCxt, &pkt)>= 0)
 	{
 		if (pkt.stream_index == iVidStrmID)
@@ -94,6 +118,7 @@ int main(int argc, char* argv[])
 			pavCCxt = pavFmtCxt->streams[iVidStrmID]->codec;
 			int iDecoded = avcodec_decode_video2(pavCCxt, pFrame,
 				&iFinished, &pkt);
+			
 			if (iDecoded > 0 && iFinished)
 			{
 				int width, height;
@@ -120,7 +145,6 @@ int main(int argc, char* argv[])
 				bool ret = false;
 
 				// 现在rgb_data 中是BGRA排序
-				ret = CreateBmp("output/"+sname, rgb_data, dstwidth, dstheight, 32);
 				// 将rgb_data 转换为RGBA排序
 				for (int k = 0; k < dstheight; ++k)
 				{
@@ -135,6 +159,7 @@ int main(int argc, char* argv[])
 
 				ret = CreateJpeg("output/"+sname, rgb_data, dstwidth, dstheight);
 				ret = CreatePng("output/"+sname, rgb_data, dstwidth, dstheight);
+				ret = CreateBmp("output/"+sname, rgb_data, dstwidth, dstheight, 32);
 			//	assert(ret);
 
 				::memset(rgb_data, 0, dstwidth*dstheight*4);
@@ -150,11 +175,23 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
+	
 	return 0;
 }
 
 bool CreateBmp(std::string filename, uint8_t *pRGBBuffer, int width, int height, int bpp)
 {
+	for (int k = 0; k < height; ++k)
+	{
+		for (int j = 0; j < (width-1) * 4; j += 4)
+		{
+			uint8_t tempc = *(pRGBBuffer + k * 4 * width + j);
+			*(pRGBBuffer + k * 4 * width + j) = *(pRGBBuffer + k * 4 * width + j + 2);
+			*(pRGBBuffer + k * 4 * width + j + 2) = tempc;
+
+		}
+	}
+
 	BITMAPFILEHEADER bmpheader;
 	BITMAPINFOHEADER bmpinfo;
 	FILE *fp = NULL;
@@ -279,3 +316,4 @@ bool CreatePng(std::string filename, uint8_t *pRGBBuffer, int width, int height)
 
 	return true;
 }
+*/
