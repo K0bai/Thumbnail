@@ -8,6 +8,8 @@ extern "C"
 #include <libswscale/swscale.h>
 };
 
+// test
+
 
 thumbnail::thumbnail(void)
 {
@@ -23,15 +25,15 @@ int thumbnail::GetImageData(std::string InputFilename, std::string OutputFilenam
 {
 	int iResult = 0;
 
-	// ×¢²á
+	// ×¢ï¿½ï¿½
 	av_register_all();
 	AVFormatContext* pavFmtCxt = NULL;
 
-	// ´ò¿ª
+	// ï¿½ï¿½
 	iResult = avformat_open_input(&pavFmtCxt, InputFilename.c_str(), NULL, NULL);
 	assert(iResult == 0);
 
-	// ¶ÁÈ¡Ò»²¿·ÖÊÓÆµ£¬ÒôÆµÐÅÏ¢
+	// ï¿½ï¿½È¡Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½Ï¢
 	iResult = avformat_find_stream_info(pavFmtCxt, NULL);
 	assert(iResult >= 0);
 
@@ -45,7 +47,7 @@ int thumbnail::GetImageData(std::string InputFilename, std::string OutputFilenam
 	}
 	assert(iVidStrmID != -1);
 
-	// ²éÕÒ²¢´ò¿ª½âÂëÆ÷.
+	// ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ò¿ª½ï¿½ï¿½ï¿½ï¿½ï¿½.
 	AVCodec* pDecodec = avcodec_find_decoder(pavFmtCxt->streams[iVidStrmID]->codec->codec_id);
 	AVCodecContext* pavCCxt = NULL;
 	pavCCxt = pavFmtCxt->streams[iVidStrmID]->codec;
@@ -55,7 +57,7 @@ int thumbnail::GetImageData(std::string InputFilename, std::string OutputFilenam
 
 //	AVFrame* pFrame = avcodec_alloc_frame();
 	AVFrame* pFrame = nullptr;
-	// ¶ÁÈ¡ÎÄ¼þ,½âÂë.
+	// ï¿½ï¿½È¡ï¿½Ä¼ï¿½,ï¿½ï¿½ï¿½ï¿½.
 	AVPacket pkt;
 //	av_init_packet(&pkt);
 	uint8_t *rgb_data = nullptr;
@@ -84,7 +86,7 @@ int thumbnail::GetImageData(std::string InputFilename, std::string OutputFilenam
 				int rgb_stride[3]={4*DstWidth, 0, 0};
 				assert(pSwsCxt);
 
-				// Ö±½ÓÓÃsws_scale ½øÐÐËõ·Å
+				// Ö±ï¿½ï¿½ï¿½ï¿½sws_scale ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				iResult = sws_scale(pSwsCxt, pFrame->data, pFrame->linesize,
 					0, height, rgb_src, rgb_stride);
 				assert(iResult == DstHeight);
@@ -101,7 +103,7 @@ int thumbnail::GetImageData(std::string InputFilename, std::string OutputFilenam
 				}
 				sws_freeContext(pSwsCxt);
 
-				// ½âÂë³É¹¦,ÍË³ö
+				// ï¿½ï¿½ï¿½ï¿½É¹ï¿½,ï¿½Ë³ï¿½
 				break;
 			}
 		}
@@ -109,7 +111,7 @@ int thumbnail::GetImageData(std::string InputFilename, std::string OutputFilenam
 	avcodec_close(pavCCxt);
 	av_close_input_file(pavFmtCxt);
 
-	// µ÷ÓÃÍ¼Ïñ±àÂëº¯Êý
+	// ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ëº¯ï¿½ï¿½
 	EncodeDataToImage(OutputFilename, rgb_data, DstWidth, DstHeight);
 	av_free(rgb_data);
 	return 0;
