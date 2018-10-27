@@ -1,2 +1,2 @@
 # Thumbnail
-This project is used to extract thumbnail form video. (@cvte)
+This project is used to extract thumbnail form video.
