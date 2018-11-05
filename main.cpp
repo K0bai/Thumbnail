@@ -10,6 +10,9 @@ int main()
 	tBmp.GetImageData("video/Titanic.mkv", "output/testBmp.bmp", 1000, 1200);
 	tJpeg.GetImageData("video/Titanic.mkv", "output/testJpeg.jpg", 1000, 1200);
 	tPng.GetImageData("video/Titanic.mkv", "output/testPng.png", 1000, 1200);
+	
+	thumbnailJpeg tJpeg;
+	thumbnailPng tPng;
 
 	return 0;
 }
@@ -20,7 +23,7 @@ int main()
 
 
 
-// ÍêÕûµÄÒ»¸öCPP£¬¿ÉÒÔÔËĞĞ
+// å®Œæ•´çš„ä¸€ä¸ªCPPï¼Œå¯ä»¥è¿è¡Œ
 /*
 #include <string>
 #include <cassert>
@@ -76,14 +79,14 @@ int main(int argc, char* argv[])
 {
 
 	int iResult = 0;
-	// ×¢²á
+	// æ³¨å†Œ
 	av_register_all();
 	std::string strfile = "video/Titanic.mkv";
 	AVFormatContext* pavFmtCxt = NULL;
-	// ´ò¿ª
+	// æ‰“å¼€
 	iResult = avformat_open_input(&pavFmtCxt, strfile.c_str(), NULL, NULL);
 	assert(iResult == 0);
-	// ¶ÁÈ¡Ò»²¿·ÖÊÓÆµ£¬ÒôÆµĞÅÏ¢
+	// è¯»å–ä¸€éƒ¨åˆ†è§†é¢‘ï¼ŒéŸ³é¢‘ä¿¡æ¯
 	iResult = avformat_find_stream_info(pavFmtCxt, NULL);
 	assert(iResult >= 0);
 
@@ -97,15 +100,15 @@ int main(int argc, char* argv[])
 	}
 	assert(iVidStrmID != -1);
 
-	// ²éÕÒ²¢´ò¿ª½âÂëÆ÷.
+	// æŸ¥æ‰¾å¹¶æ‰“å¼€è§£ç å™¨.
 	AVCodec* pDecodec = avcodec_find_decoder(pavFmtCxt->streams[iVidStrmID]->codec->codec_id);
 	iResult = avcodec_open2(pavFmtCxt->streams[iVidStrmID]->codec, pDecodec, NULL);
 	assert(iResult >= 0);
 
-	// ÏÔÊ¾ĞÅÏ¢
+	// æ˜¾ç¤ºä¿¡æ¯
 	av_dump_format(pavFmtCxt, iVidStrmID, strfile.c_str(), 0);
 
-	// ¶ÁÈ¡ÎÄ¼ş,½âÂë.
+	// è¯»å–æ–‡ä»¶,è§£ç .
 	AVFrame* pFrame = avcodec_alloc_frame();
 	AVPacket pkt;
 	av_init_packet(&pkt);
@@ -124,7 +127,7 @@ int main(int argc, char* argv[])
 				int width, height;
 				width = pavFmtCxt->streams[iVidStrmID]->codec->width;
 				height = pavFmtCxt->streams[iVidStrmID]->codec->height;
-				// Ä¿±ê´óĞ¡
+				// ç›®æ ‡å¤§å°
 				int dstwidth = width / 2;
 				int dstheight = height / 2;
 				SwsContext* pSwsCxt = sws_getContext(width, height, PIX_FMT_YUV420P,
@@ -133,7 +136,7 @@ int main(int argc, char* argv[])
 				uint8_t *rgb_src[3]= {rgb_data, NULL, NULL};
 				int rgb_stride[3]={4*dstwidth, 0, 0};
 				assert(pSwsCxt);
-				// Ö±½ÓÓÃsws_scale ½øĞĞËõ·Å
+				// ç›´æ¥ç”¨sws_scale è¿›è¡Œç¼©æ”¾
 				iResult = sws_scale(pSwsCxt, pFrame->data, pFrame->linesize,
 					0, height, rgb_src, rgb_stride);
 				assert(iResult == dstheight);
@@ -144,8 +147,8 @@ int main(int argc, char* argv[])
 				ss >> sname;
 				bool ret = false;
 
-				// ÏÖÔÚrgb_data ÖĞÊÇBGRAÅÅĞò
-				// ½«rgb_data ×ª»»ÎªRGBAÅÅĞò
+				// ç°åœ¨rgb_data ä¸­æ˜¯BGRAæ’åº
+				// å°†rgb_data è½¬æ¢ä¸ºRGBAæ’åº
 				for (int k = 0; k < dstheight; ++k)
 				{
 					for (int j = 0; j < (dstwidth-1) * 4; j += 4)
@@ -166,12 +169,12 @@ int main(int argc, char* argv[])
 				av_freep(&rgb_data);
 				sws_freeContext(pSwsCxt);
 
-				// ½âÂë³É¹¦,ÍË³ö
+				// è§£ç æˆåŠŸ,é€€å‡º
 				break;
 			}
 			else
 			{
-				printf("½âÂëÊ§°Ü");
+				printf("è§£ç å¤±è´¥");
 			}
 		}
 	}
