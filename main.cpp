@@ -11,8 +11,8 @@ int main()
 	tJpeg.GetImageData("video/Titanic.mkv", "output/testJpeg.jpg", 1000, 1200);
 	tPng.GetImageData("video/Titanic.mkv", "output/testPng.png", 1000, 1200);
 	
-	thumbnailJpeg tJpeg;
-	thumbnailPng tPng;
+	thumbnailJpeg tJpeg1;
+	thumbnailPng tPng2;
 
 	return 0;
 }
